@@ -128,7 +128,7 @@ if uploaded_file is not None:
         with col1:
             st.dataframe(emoji_df)
         with col2:
-            if not emoji_df.empty:
+            if not emoji_df.empty and len(emoji_df.columns) >= 2:
 
                 # Prepare top emojis + "Others"
                 top_emojis = emoji_df.head(4)
@@ -138,23 +138,24 @@ if uploaded_file is not None:
                 counts = top_emojis[1].tolist() + [other_sum]
                 total = sum(counts)
 
-                # Create labels with emojis + percentage
-                pie_labels = [f"{emoji} ({(count / total) * 100:.1f}%)" if emoji != 'Others' else f"Others ({(count / total) * 100:.1f}%)"
-                            for emoji, count in zip(labels, counts)]
+                # ✅ Directly embed emojis in labels
+                pie_labels = [
+                    f"{emoji} ({(count / total) * 100:.1f}%)" if emoji != 'Others' 
+                    else f"Others ({(count / total) * 100:.1f}%)"
+                    for emoji, count in zip(labels, counts)
+                ]
 
-                # Plotting Pie Chart
-                fig, ax = plt.subplots(figsize=(8, 6))
-                wedges, texts = ax.pie(counts, labels=pie_labels, 
+                # Plotting
+                fig, ax = plt.subplots(figsize=(7, 6))
+                wedges, texts = ax.pie(counts, labels=pie_labels,
                                     colors=['#f94144', '#f3722c', '#90be6d', '#577590', '#d3d3d3'],
-                                    startangle=140, wedgeprops=dict(width=0.4), 
-                                    textprops=dict(fontsize=12))
+                                    startangle=140, wedgeprops=dict(width=0.4),
+                                    textprops={'fontsize': 12})
 
-                # Title and layout
-                ax.set_title("Top Emoji Usage with Percentage", fontsize=16, fontweight='bold')
+                ax.set_title("Top Emoji Usage", fontsize=16, fontweight='bold')
                 plt.tight_layout()
 
-                # Show in Streamlit
                 st.pyplot(fig)
 
             else:
-                st.warning("No emojis found in selected chat.")
+                st.warning("No emojis found in the chat file.")
