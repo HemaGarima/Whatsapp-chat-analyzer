@@ -5,3 +5,4 @@ urlextract
 wordcloud
 pandas
 emoji==2.9.0
+plotly

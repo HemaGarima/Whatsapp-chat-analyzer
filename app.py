@@ -6,6 +6,9 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import plotly.express as px
+import pandas as pd
+
 rcParams['font.family'] = 'Segoe UI Emoji'
 
 st.sidebar.title("Whatsapp Chat Analyzer")
@@ -130,7 +133,7 @@ if uploaded_file is not None:
         with col2:
             if not emoji_df.empty and len(emoji_df.columns) >= 2:
 
-                # Prepare top emojis + "Others"
+                # Prepare data
                 top_emojis = emoji_df.head(4)
                 other_sum = emoji_df[1][4:].sum()
 
@@ -138,24 +141,18 @@ if uploaded_file is not None:
                 counts = top_emojis[1].tolist() + [other_sum]
                 total = sum(counts)
 
-                # ✅ Directly embed emojis in labels
-                pie_labels = [
-                    f"{emoji} ({(count / total) * 100:.1f}%)" if emoji != 'Others' 
-                    else f"Others ({(count / total) * 100:.1f}%)"
-                    for emoji, count in zip(labels, counts)
-                ]
+                # DataFrame for Plotly
+                pie_data = pd.DataFrame({'Emoji': labels, 'Count': counts})
 
-                # Plotting
-                fig, ax = plt.subplots(figsize=(7, 6))
-                wedges, texts = ax.pie(counts, labels=pie_labels,
-                                    colors=['#f94144', '#f3722c', '#90be6d', '#577590', '#d3d3d3'],
-                                    startangle=140, wedgeprops=dict(width=0.4),
-                                    textprops={'fontsize': 12})
+                # Plotly Pie Chart
+                fig = px.pie(pie_data, values='Count', names='Emoji',
+                            title="Top Emoji Usage",
+                            color_discrete_sequence=px.colors.sequential.RdBu,
+                            hole=0.4)
 
-                ax.set_title("Top Emoji Usage", fontsize=16, fontweight='bold')
-                plt.tight_layout()
+                fig.update_traces(textposition='inside', textinfo='label+percent')
 
-                st.pyplot(fig)
+                st.plotly_chart(fig)
 
             else:
                 st.warning("No emojis found in the chat file.")
