@@ -6,7 +6,7 @@ This project is a **WhatsApp Chat Analyzer Web Application** built using Python 
 
 ## 🔗 Project Link
 
-👉 [Live App on Streamlit](https://whatsapp-chat-analyzer-yourusername.streamlit.app) 
+👉 [Live App on Streamlit](https://whatsapp-chat-analyzer-9vce8cezr6brwsvpbmxnwb.streamlit.app/)
 
 ---
 
